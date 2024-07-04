@@ -5,7 +5,7 @@ import { addToCart } from '../cart';
 </script>
 
 <template>
-    <section class="container mx-auto">
+    <section class="container mx-auto pt-12">
       <div class="lg:w-1/2">
         <h2 class="text-6xl font-bold">AI Emporium</h2>
         <p class="text-2xl">This is an example demonstrating how to create a basic AI shopping co-pilot using <a href="https://chatthing.ai" target="_blank">Chat Thing.</a></p>

@@ -7,6 +7,10 @@ import Cart from './components/Cart.vue';
 import { addToCart, cart, removeFromCart, totalPrice } from './cart';
 
 const router = useRouter();
+
+// Because the Chat Thing SDK is loaded via a script tag it will not be available as soon as the page loads
+// so we use an interval function to watch for the chatThing object to be available on the window
+// before continue our setup
 const chatThingInitialised = ref(false);
 const { pause } = useIntervalFn(() => {
   if (!window.chatThing) {
@@ -17,12 +21,14 @@ const { pause } = useIntervalFn(() => {
     pause();
   }
 
+  // We extend the context we a list of our products
   window.chatThing.systemMessage('extend', `
     <products>
     ${JSON.stringify(products)}
     </products>
   `)
 
+  // Next we register our custom power-ups
   window.chatThing.registerPowerUp({
     name: 'Add to basket',
     description: 'Add a product to the basket',
@@ -39,7 +45,7 @@ const { pause } = useIntervalFn(() => {
       }
     },
     handler: (args) => {
-      return  JSON.parse(JSON.stringify(addToCart(args.productId, args.qty)));
+      return addToCart(args.productId, args.qty);
     }
   });
 
@@ -54,7 +60,7 @@ const { pause } = useIntervalFn(() => {
       }
     },
     handler: (args) => {
-      return JSON.parse(JSON.stringify(removeFromCart(args.productId)));
+      return removeFromCart(args.productId);
     }
   });
 
@@ -63,10 +69,68 @@ const { pause } = useIntervalFn(() => {
     description: 'Get cart items and total price',
     parameters: {},
     handler: () => {
-      return JSON.parse(JSON.stringify({
+      return {
         cart: cart.value,
         totalPrice: totalPrice.value
-      }))
+      }
+    }
+  });
+
+  window.chatThing.registerPowerUp({
+    name: 'Get order details',
+    description: 'Get details about an order including shipping status',
+    parameters: {
+      orderNumber: {
+        type: 'string',
+        description: 'The unique order number',
+        required: true
+      },
+      email: {
+        type: 'string',
+        description: 'The email used for the order',
+        required: true
+      }
+    },
+    handler: (args) => {
+
+      const orderDate = new Date();
+      const items = [
+        {
+          ...products[1],
+          qty: 1
+        },
+        {
+          ...products[3],
+          qty: 2
+        }
+      ];
+      
+      const totalPrice = items.reduce((total, item) => {
+        return total + item.qty * item.price;
+      }, 0);
+
+      return {
+        orderNumber: args.orderNumber,
+        email: args.email,
+        orderDate: orderDate.toISOString(),
+        items,
+        totalPrice,
+        shipping: {
+          address: {
+            firstName: 'Sam',
+            lastName: 'Altman',
+            line1: '61 AI Land',
+            line2: '',
+            city: 'Newquay',
+            county: 'Cornwall',
+            postcode: 'TR7 3ER',
+            country: 'United Kingdom'
+          },
+          status: 'shipped',
+          carrier: 'DPD',
+          trackingNumber: 'DPD536247K382'
+        }
+      }
     }
   });
 
@@ -80,9 +144,9 @@ const { pause } = useIntervalFn(() => {
         required: true
       }
     },
-    handler: (args) => {
+    handler: async (args) => {
       try {
-        router.push({ path: args.path });
+        await router.push({ path: args.path });
         return {
           success: true
         };
@@ -94,8 +158,8 @@ const { pause } = useIntervalFn(() => {
     }
   });
 
-  window.chatThing.showPreview('Hey let me help you with your AI purchase', 1000);
-  window.chatThing.show();
+  // Pop-up a message to grab attention
+  window.chatThing.showPreview('👋 Hey do you need a hand purchasing cool AI merch or with your order?', 0);
   console.log('Chat Thing initialised');
   chatThingInitialised.value = true;
   pause();
@@ -111,7 +175,7 @@ const { pause } = useIntervalFn(() => {
       <h1 class="text-lg font-bold">AI shopping co-pilot demo</h1>
     </nav>
   </header>
-  <div class="pt-24">
+  <div class="pt-12">
     <main>
       <RouterView />
     </main>
