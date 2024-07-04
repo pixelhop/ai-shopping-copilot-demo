@@ -2,7 +2,6 @@
 import { computed, nextTick, ref, watch } from 'vue';
 import ConfettiExplosion from "vue-confetti-explosion";
 import { useTimeoutFn } from '@vueuse/core';
-import { Product } from '../types';
 import { cart, totalPrice } from '../cart';
 const cartOpen = ref(false);
 

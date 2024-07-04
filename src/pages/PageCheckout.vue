@@ -1,17 +1,34 @@
-<!--
-  This example requires some changes to your config:
-  
-  ```
-  // tailwind.config.js
-  module.exports = {
-    // ...
-    plugins: [
-      // ...
-      require('@tailwindcss/forms'),
-    ],
-  }
-  ```
--->
+<script setup lang="ts">
+import { ref } from 'vue'
+import { RadioGroup, RadioGroupOption } from '@headlessui/vue'
+import { CheckCircleIcon, TrashIcon } from '@heroicons/vue/20/solid'
+
+const products = [
+  {
+    id: 1,
+    title: 'Basic Tee',
+    href: '#',
+    price: '$32.00',
+    color: 'Black',
+    size: 'Large',
+    imageSrc: 'https://tailwindui.com/img/ecommerce-images/checkout-page-02-product-01.jpg',
+    imageAlt: "Front of men's Basic Tee in black.",
+  },
+  // More products...
+]
+const deliveryMethods = [
+  { id: 1, title: 'Standard', turnaround: '4–10 business days', price: '$5.00' },
+  { id: 2, title: 'Express', turnaround: '2–5 business days', price: '$16.00' },
+]
+const paymentMethods = [
+  { id: 'credit-card', title: 'Credit card' },
+  { id: 'paypal', title: 'PayPal' },
+  { id: 'etransfer', title: 'eTransfer' },
+]
+
+const selectedDeliveryMethod = ref(deliveryMethods[0])
+</script>
+
 <template>
   <div class="bg-gray-50">
     <div class="mx-auto max-w-2xl px-4 pb-24 pt-16 sm:px-6 lg:max-w-7xl lg:px-8">
@@ -139,7 +156,7 @@
               <legend class="sr-only">Payment type</legend>
               <div class="space-y-4 sm:flex sm:items-center sm:space-x-10 sm:space-y-0">
                 <div v-for="(paymentMethod, paymentMethodIdx) in paymentMethods" :key="paymentMethod.id" class="flex items-center">
-                  <input v-if="paymentMethodIdx === 0" :id="paymentMethod.id" name="payment-type" type="radio" checked="" class="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-500" />
+                  <input v-if="paymentMethodIdx === 0" :id="paymentMethod.id" name="payment-type" type="radio" checked="false" class="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-500" />
                   <input v-else :id="paymentMethod.id" name="payment-type" type="radio" class="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-500" />
                   <label :for="paymentMethod.id" class="ml-3 block text-sm font-medium text-gray-700">{{ paymentMethod.title }}</label>
                 </div>
@@ -256,34 +273,3 @@
     </div>
   </div>
 </template>
-
-<script setup>
-import { ref } from 'vue'
-import { RadioGroup, RadioGroupOption } from '@headlessui/vue'
-import { CheckCircleIcon, TrashIcon } from '@heroicons/vue/20/solid'
-
-const products = [
-  {
-    id: 1,
-    title: 'Basic Tee',
-    href: '#',
-    price: '$32.00',
-    color: 'Black',
-    size: 'Large',
-    imageSrc: 'https://tailwindui.com/img/ecommerce-images/checkout-page-02-product-01.jpg',
-    imageAlt: "Front of men's Basic Tee in black.",
-  },
-  // More products...
-]
-const deliveryMethods = [
-  { id: 1, title: 'Standard', turnaround: '4–10 business days', price: '$5.00' },
-  { id: 2, title: 'Express', turnaround: '2–5 business days', price: '$16.00' },
-]
-const paymentMethods = [
-  { id: 'credit-card', title: 'Credit card' },
-  { id: 'paypal', title: 'PayPal' },
-  { id: 'etransfer', title: 'eTransfer' },
-]
-
-const selectedDeliveryMethod = ref(deliveryMethods[0])
-</script>
