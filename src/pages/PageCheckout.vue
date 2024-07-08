@@ -1,22 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { RadioGroup, RadioGroupOption } from '@headlessui/vue';
-import { CheckCircleIcon, TrashIcon } from '@heroicons/vue/20/solid';
+import { CheckCircleIcon } from '@heroicons/vue/20/solid';
 import { cart, totalPrice } from '../cart';
 
-const products = [
-  {
-    id: 1,
-    title: 'Basic Tee',
-    href: '#',
-    price: '$32.00',
-    color: 'Black',
-    size: 'Large',
-    imageSrc: 'https://tailwindui.com/img/ecommerce-images/checkout-page-02-product-01.jpg',
-    imageAlt: "Front of men's Basic Tee in black.",
-  },
-  // More products...
-]
 const deliveryMethods = [
   { id: 1, title: 'Standard', turnaround: '4–10 business days', price: '$5.00' },
   { id: 2, title: 'Express', turnaround: '2–5 business days', price: '$16.00' },
@@ -212,7 +199,7 @@ const selectedDeliveryMethod = ref(deliveryMethods[0])
                   <div class="flex">
                     <div class="min-w-0 flex-1">
                       <h4 class="text-sm">
-                        <RouterLink :to="`/products/${id}`" class="font-medium text-gray-700 hover:text-gray-800">{{ product.name }}</RouterLink>
+                        <RouterLink :to="`/products/${product.id}`" class="font-medium text-gray-700 hover:text-gray-800">{{ product.name }}</RouterLink>
                       </h4>
                       <p class="mt-1 text-sm text-gray-500">x{{ product.qty }}</p>
                     </div>
