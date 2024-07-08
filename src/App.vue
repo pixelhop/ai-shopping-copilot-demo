@@ -1,35 +1,25 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { RouterView, useRouter } from 'vue-router';
-import { useIntervalFn } from '@vueuse/core';
 import { products } from './products';
 import Cart from './components/Cart.vue';
 import { addToCart, cart, removeFromCart, totalPrice } from './cart';
+import { useChatThing } from './composables/useChatThing';
 
 const router = useRouter();
 
-// Because the Chat Thing SDK is loaded via a script tag it will not be available as soon as the page loads
-// so we use an interval function to watch for the chatThing object to be available on the window
-// before continue our setup
 const chatThingInitialised = ref(false);
-const { pause } = useIntervalFn(() => {
-  if (!window.chatThing) {
-    return;
-  }
-
-  if (chatThingInitialised.value) {
-    pause();
-  }
-
+onMounted(async () => {
+  const chatThing = await useChatThing();
   // We extend the context we a list of our products
-  window.chatThing.systemMessage('extend', `
+  chatThing.systemMessage('extend', `
     <products>
     ${JSON.stringify(products)}
     </products>
   `)
 
   // Next we register our custom power-ups
-  window.chatThing.registerPowerUp({
+  chatThing.registerPowerUp({
     name: 'Add to basket',
     description: 'Add a product to the basket',
     parameters: {
@@ -49,7 +39,7 @@ const { pause } = useIntervalFn(() => {
     }
   });
 
-  window.chatThing.registerPowerUp({
+  chatThing.registerPowerUp({
     name: 'Remove from basket',
     description: 'Remove a product from the basket',
     parameters: {
@@ -64,7 +54,7 @@ const { pause } = useIntervalFn(() => {
     }
   });
 
-  window.chatThing.registerPowerUp({
+  chatThing.registerPowerUp({
     name: 'Get cart',
     description: 'Get cart items and total price',
     parameters: {},
@@ -76,7 +66,7 @@ const { pause } = useIntervalFn(() => {
     }
   });
 
-  window.chatThing.registerPowerUp({
+  chatThing.registerPowerUp({
     name: 'Get order details',
     description: 'Get details about an order including shipping status',
     parameters: {
@@ -134,7 +124,7 @@ const { pause } = useIntervalFn(() => {
     }
   });
 
-  window.chatThing.registerPowerUp({
+  chatThing.registerPowerUp({
     name: 'Navigate',
     description: 'Navigate to the given page',
     parameters: {
@@ -159,12 +149,11 @@ const { pause } = useIntervalFn(() => {
   });
 
   // Pop-up a message to grab attention
-  window.chatThing.showPreview('👋 Hey do you need a hand purchasing cool AI merch or with your order?', 0);
+  chatThing.showPreview('👋 Hey do you need a hand purchasing cool AI merch or with your order?', 0);
   console.log('Chat Thing initialised');
   chatThingInitialised.value = true;
-  pause();
-}, 200, { immediate: true });
-
+  chatThingInitialised.value = true;
+});
 
 </script>
 
