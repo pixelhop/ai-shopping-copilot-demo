@@ -152,7 +152,6 @@ onMounted(async () => {
   chatThing.showPreview('👋 Hey do you need a hand purchasing cool AI merch or with your order?', 0);
   console.log('Chat Thing initialised');
   chatThingInitialised.value = true;
-  chatThingInitialised.value = true;
 });
 
 </script>
