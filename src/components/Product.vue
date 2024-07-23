@@ -19,7 +19,7 @@ const emit = defineEmits<{
         <h4 class="font-bold">{{ name }}</h4>
         <p>&pound;{{ price }}</p>
         <RouterLink :to="`/products/${id}`">More info</RouterLink>
-        <button class="w-full" @click="emit('add')">Add to cart</button>
+        <button class="w-full bg-gray-200 hover:cursor-pointer" @click="emit('add')">Add to cart</button>
     </div>
 </template>
 
